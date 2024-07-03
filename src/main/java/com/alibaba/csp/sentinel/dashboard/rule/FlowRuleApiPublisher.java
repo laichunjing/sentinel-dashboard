@@ -21,9 +21,11 @@ import java.util.Set;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
 import com.alibaba.csp.sentinel.dashboard.discovery.AppManagement;
 import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
+import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.util.StringUtil;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +40,12 @@ public class FlowRuleApiPublisher implements DynamicRulePublisher<List<FlowRuleE
     private SentinelApiClient sentinelApiClient;
     @Autowired
     private AppManagement appManagement;
+    // 自己添加的代码 这个service就是代表我们的Nacos配置 NacosConfig类里的nacosConfigService()
+    @Autowired
+    private ConfigService configService;
+    // 自己添加的代码
+    @Autowired
+    private Converter<List<FlowRuleEntity>, String> converter;
 
     @Override
     public void publish(String app, List<FlowRuleEntity> rules) throws Exception {
@@ -55,6 +63,9 @@ public class FlowRuleApiPublisher implements DynamicRulePublisher<List<FlowRuleE
             }
             // TODO: parse the results
             sentinelApiClient.setFlowRuleOfMachine(app, machine.getIp(), machine.getPort(), rules);
+            //自己添加的代码 推送给Nacos
+            configService.publishConfig(app + NacosConfigUtil.FLOW_DATA_ID_POSTFIX,
+                    NacosConfigUtil.GROUP_ID, converter.convert(rules));
         }
     }
 }
