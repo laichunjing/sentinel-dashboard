@@ -126,4 +126,6 @@ public abstract class InMemoryRuleRepositoryAdapter<T extends RuleEntity> implem
      * @return next unused id
      */
     abstract protected long nextId();
+
+    abstract public void setMaxID(long id);
 }

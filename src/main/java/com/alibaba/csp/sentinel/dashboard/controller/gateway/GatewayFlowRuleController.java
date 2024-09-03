@@ -34,9 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -88,6 +90,11 @@ public class GatewayFlowRuleController {
             //使用Provider实现类获取规则配置
             List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app);
             repository.saveAll(rules);
+            if(!CollectionUtils.isEmpty(rules)) {
+                //获取最大值Id
+                Long id = rules.stream().max(Comparator.comparing(GatewayFlowRuleEntity::getId)).get().getId();
+                repository.setMaxID(id);
+            }
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {
             logger.error("query gateway flow rules error:", throwable);

@@ -36,6 +36,16 @@ public class InMemFlowRuleStore extends InMemoryRuleRepositoryAdapter<FlowRuleEn
     protected long nextId() {
         return ids.incrementAndGet();
     }
+    /**
+     * 如果内存中的Id和规则中最大值的Id不相等，则以规则列表中的最大值Id为初始值
+     * @param id
+     */
+    @Override
+    public void setMaxID(long id) {
+        if(id != ids.get()) {
+            ids = new AtomicLong(id);
+        }
+    }
 
     @Override
     protected FlowRuleEntity preProcess(FlowRuleEntity entity) {
