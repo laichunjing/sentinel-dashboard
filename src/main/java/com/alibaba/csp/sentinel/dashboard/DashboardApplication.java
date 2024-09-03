@@ -17,8 +17,13 @@ package com.alibaba.csp.sentinel.dashboard;
 
 import com.alibaba.csp.sentinel.init.InitExecutor;
 
+import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Sentinel dashboard application.
@@ -36,4 +41,12 @@ public class DashboardApplication {
     private static void triggerSentinelInit() {
         new Thread(() -> InitExecutor.doInit()).start();
     }
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
+        return tomcatServletWebServerFactory -> tomcatServletWebServerFactory.addContextCustomizers((TomcatContextCustomizer) context -> {
+            context.setCookieProcessor(new LegacyCookieProcessor());
+        });
+    }
+
+
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration status="WARN">
+    <property name="log.path" value="logs/"/>
+
+    <!-- 日志输出格式 -->
+    <property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="RollingFile1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}sentinel-record.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}sentinel-record-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="RollingFile2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}sentinel-command-center.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}sentinel-command-center-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="Console"/>
+    </root>
+
+    <logger name="sentinelRecordLogger" level="info" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFile1"/>
+    </logger>
+
+    <logger name="sentinelCommandCenterLogger" level="info" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFile2"/>
+    </logger>
+</configuration>
