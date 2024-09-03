@@ -86,6 +86,11 @@ public class GatewayApiController {
             //使用Provider实现类获取规则配置
             List<ApiDefinitionEntity> apis = apiProvider.getRules(app);
             repository.saveAll(apis);
+            if(!CollectionUtils.isEmpty(apis)) {
+                //获取最大值Id
+                Long id = apis.stream().max(Comparator.comparing(ApiDefinitionEntity::getId)).get().getId();
+                repository.setMaxID(id);
+            }
             return Result.ofSuccess(apis);
         } catch (Throwable throwable) {
             logger.error("queryApis error:", throwable);
