@@ -15,14 +15,17 @@
  */
 package com.alibaba.csp.sentinel.dashboard;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.alibaba.csp.sentinel.init.InitExecutor;
-
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -31,9 +34,12 @@ import org.springframework.context.annotation.Bean;
  * @author Carpenter Lee
  */
 @SpringBootApplication
+@EnableDiscoveryClient
 public class DashboardApplication {
 
     public static void main(String[] args) {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusPrinter.print(context);
         triggerSentinelInit();
         SpringApplication.run(DashboardApplication.class, args);
     }
