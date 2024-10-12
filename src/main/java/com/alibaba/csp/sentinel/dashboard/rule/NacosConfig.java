@@ -18,13 +18,13 @@ package com.alibaba.csp.sentinel.dashboard.rule;
 import com.alibaba.csp.sentinel.dashboard.config.NacosPropertiesConfiguration;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.*;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -61,6 +61,44 @@ public class NacosConfig {
     public Converter<String, List<DegradeRuleEntity>> degradeRuleEntityDecoder() {
         return s -> JSON.parseArray(s, DegradeRuleEntity.class);
     }
+    @Bean
+    public Converter<List<ParamFlowRuleEntity>, String> paramRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    @Bean
+    public Converter<String, List<ParamFlowRuleEntity>> paramRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, ParamFlowRuleEntity.class);
+    }
+
+    @Bean
+    public Converter<List<ParamFlowRuleCorrectEntity>, String> paramFlowRuleCorrectEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    @Bean
+    public Converter<String, List<ParamFlowRuleCorrectEntity>> paramFlowRuleCorrectEntityDecoder() {
+        return s -> JSON.parseArray(s, ParamFlowRuleCorrectEntity.class);
+    }
+    @Bean
+    public Converter<java.util.List<AuthorityRuleCorrectEntity>, String> authorityRuleCorrectEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    @Bean
+    public Converter<String, java.util.List<AuthorityRuleCorrectEntity>> authorityRuleCorrectEntityDecoder() {
+        return s -> JSON.parseArray(s, AuthorityRuleCorrectEntity.class);
+    }
+    @Bean
+    public Converter<java.util.List<SystemRuleEntity>, String> systemRuleCorrectEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    @Bean
+    public Converter<String, java.util.List<SystemRuleEntity>> systemRuleCorrectEntityDecoder() {
+        return s -> JSON.parseArray(s, SystemRuleEntity.class);
+    }
+
 
     @Bean
     public ConfigService nacosConfigService() throws Exception {
@@ -68,6 +106,9 @@ public class NacosConfig {
         properties.put(PropertyKeyConst.SERVER_ADDR, nacosPropertiesConfiguration.getServerAddr());
         properties.put(PropertyKeyConst.USERNAME,nacosPropertiesConfiguration.getUsername());
         properties.put(PropertyKeyConst.PASSWORD,nacosPropertiesConfiguration.getPassword());
+        if(StringUtils.isNotEmpty(nacosPropertiesConfiguration.getNamespace())){
+            properties.put(PropertyKeyConst.NAMESPACE,nacosPropertiesConfiguration.getNamespace());
+        }
         return ConfigFactory.createConfigService(properties);
         //return ConfigFactory.createConfigService("localhost:8848");
     }
