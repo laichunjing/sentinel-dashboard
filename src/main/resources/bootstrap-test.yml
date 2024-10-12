@@ -1,0 +1,105 @@
+spring:
+  #服务名称
+  application:
+    name: service-test
+
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      username: nacos
+      password: fb-DE.bNGt3jEV2U
+      #服务配置中心
+      config:
+        enabled: true
+        #配置中心服务前缀
+        prefix: service-test
+        #配置中心url
+        server-addr: nacos-headless.infra.svc.cluster.local.:8848
+        namespace: ugos-pro-dev
+        #读取配置中心指定后缀的配置文件
+        file-extension: yaml
+        extension-configs: ##拓展配置
+          0:
+            data-id: global-common-local.yaml
+            refresh: true
+      discovery:
+        enabled: false
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        namespace: ugos-pro-dev
+        register-enabled: true
+    sentinel:
+      # 支持链路限流
+      web-context-unify: false
+      ## 关闭官方默认收敛所有context
+      filter:
+        enabled: true
+      # 取消控制台懒加载
+      eager: true
+      scg: #配置限流之后，响应内容
+        fallback:
+          mode: response
+          response-status: 200
+          #限流响应内容
+          response-body: "{\"code\": 52001,\"msg\": \"The system is currently experiencing network congestion. Please try again later!\"}"
+          content-type: "application/json"
+      transport:
+        port: 8719
+        dashboard: 192.168.76.130:8099
+      datasource:
+        #sentinel用nacos作为数据源的配置
+        #流控规则管理(这个名称可以自定义)
+        flow-rule:
+          #告诉sentinel用nacos作为数据源
+          nacos:
+            #nacos配置中心里执行文件的dataId
+            data-id: ${spring.application.name}-flow-rules
+            #nacos的地址
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            username: ${spring.cloud.nacos.username}
+            password: ${spring.cloud.nacos.password}
+            # 规则数据格式
+            data-type: json
+            group-id: SENTINEL_GROUP
+            namespace: ugos-pro-dev
+            #指定文件配置的是哪种规则 flow-流控,degrade-熔断,param-flow热点参数,system-系统保护,authority-授权,gw-flow gateway网关流控,gw-api-group
+            rule-type: flow
+        degrade-rule:
+          #熔断规则管理(这个名称可以自定义)
+          #告诉sentinel用nacos作为数据源
+          nacos:
+            #nacos配置中心里执行文件的dataId
+            data-id: ${spring.application.name}-sentinel-degrade-rules
+            #nacos的地址
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            username: ${spring.cloud.nacos.username}
+            password: ${spring.cloud.nacos.password}
+            namespace: ugos-pro-dev
+            # 规则数据格式
+            data-type: json
+            group-id: SENTINEL_GROUP
+            #指定文件配置的是哪种规则 flow-流控,degrade-熔断,param-flow热点参数,system-系统保护,authority-授权,gw-flow gateway网关流控,gw-api-group
+            rule-type: degrade
+        param-rule:
+          #熔断规则管理(这个名称可以自定义)
+          #告诉sentinel用nacos作为数据源
+          nacos:
+            #nacos配置中心里执行文件的dataId
+            data-id: ${spring.application.name}-param-rules
+            #nacos的地址
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            username: ${spring.cloud.nacos.username}
+            password: ${spring.cloud.nacos.password}
+            namespace: ugos-pro-dev
+            # 规则数据格式
+            data-type: json
+            group-id: SENTINEL_GROUP
+            #指定文件配置的是哪种规则 flow-流控,degrade-熔断,param-flow热点参数,system-系统保护,authority-授权,gw-flow gateway网关流控,gw-api-group
+            rule-type: param-flow
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+
+logging:
+  level:
+    com.alibaba.nacos.client.naming: error
