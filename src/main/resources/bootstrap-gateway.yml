@@ -1,0 +1,86 @@
+spring:
+  #服务名称
+  application:
+    name: server-gateway
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      username: nacos
+      password: fb-DE.bNGt3jEV2U
+      #服务配置中心
+      config:
+        enabled: true
+        #配置中心服务前缀
+        prefix: server-gateway
+        #配置中心url
+        server-addr: nacos-headless.infra.svc.cluster.local.:8848
+        namespace: ugos-pro-dev
+        #读取配置中心指定后缀的配置文件
+        file-extension: yaml
+        extension-configs:
+          0:
+            data-id: global-common-local.yaml
+            refresh: true
+      discovery:
+        enabled: true
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        namespace: ugos-pro-dev
+        register-enabled: true
+    sentinel:
+      # 支持链路限流
+      web-context-unify: false
+      ## 关闭官方默认收敛所有context
+      filter:
+        enabled: false
+      # 取消控制台懒加载
+      eager: true
+      scg: #配置限流之后，响应内容
+        fallback:
+          mode: response
+          response-status: 200
+          response-body: "{\"resultCode\": 52001,\"description\": \"The system is currently experiencing network congestion. Please try again later!\"}"  #限流响应内容
+          content-type: "application/json"
+      #控制台地址
+      transport:
+        #控制台路径
+        port: 8719
+        dashboard: 223.254.0.101:8099
+      datasource:
+        # 名称随意
+        gw-flow:
+          nacos:
+            #nacos地址
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            # 在修改的sentinel 源码中定义的规则名
+            data-id: ${spring.application.name}-gateway-flow-rules
+            namespace: ugos-pro-dev
+            #namespace: xxxxx   #nacos 命名空间
+            #nacos的用户名
+            username: ${spring.cloud.nacos.username}
+            #nacos的密码
+            password: ${spring.cloud.nacos.password}
+            group-id: SENTINEL_GROUP
+            #枚举类型
+            rule-type: gw-flow
+        gw-api-group:
+          nacos:
+            #nacos地址
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            # 在修改的sentinel 源码中定义的规则名
+            data-id: ${spring.application.name}-gateway-api-rules
+            namespace: ugos-pro-dev
+            #namespace: xxxxx  #nacos 命名空间
+            #nacos的用户名
+            username: ${spring.cloud.nacos.username}
+            #nacos的密码
+            password: ${spring.cloud.nacos.password}
+            group-id: SENTINEL_GROUP
+            #枚举类型
+            rule-type: gw-api-group
+
+logging:
+  level:
+    com.alibaba.nacos.client.naming: error
