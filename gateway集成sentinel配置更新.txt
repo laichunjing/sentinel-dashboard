@@ -1,0 +1,80 @@
+gateway依赖
+        <!--sentinel-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-sentinel-gateway entinel gateway依赖包-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-gateway sentilen用 nacos做持久化-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-transport-simple-http</artifactId>
+        </dependency>
+        <!--sentinel end-->
+
+
+gateway bootstrap.yml增加配置：
+spring:
+  cloud:
+	sentinel:
+      datasource:
+        gw-flow:
+          nacos:
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            data-id: ${spring.application.name}-gateway-flow-rules
+            username: ${spring.cloud.nacos.username}
+            password: ${spring.cloud.nacos.password}
+            group-id: SENTINEL_GROUP
+            rule-type: gw-flow
+        gw-api-group:
+          nacos:
+            server-addr: ${spring.cloud.nacos.config.server-addr}
+            data-id: ${spring.application.name}-gateway-api-rules
+            username: ${spring.cloud.nacos.username}
+            password: ${spring.cloud.nacos.password}
+            group-id: SENTINEL_GROUP
+            rule-type: gw-api-group
+
+gateway nacos配置增加：
+spring:
+  cloud:
+    sentinel:
+      # 支持链路限流
+      web-context-unify: false
+      ## 关闭官方默认收敛所有context
+      filter:
+        enabled: true
+      # 取消控制台懒加载
+      eager: true
+      scg: #配置限流之后，响应内容
+        fallback:
+          mode: response
+          response-status: 200
+          #限流响应内容
+          response-body: "{\"code\": 52001,\"msg\": \"The system is currently experiencing network congestion. Please try again later!\"}"  
+          content-type: "application/json"
+      #控制台地址
+      transport:
+        #控制台路径
+        dashboard: 58.49.151.55:8099
+
+ugreen-gateway.sh 增加启动参数 -Dcsp.sentinel.app.type=1		
+#gc配置
+JAVA_OPTS="${JAVA_OPTS} -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -Dcsp.sentinel.app.type=1"
+	
+	
+sentinel控制台增加application.property配置（记得改nacos配置），jekins新增任务，打包启动后
+
+gateway使用分支sentinel_gateway部署
