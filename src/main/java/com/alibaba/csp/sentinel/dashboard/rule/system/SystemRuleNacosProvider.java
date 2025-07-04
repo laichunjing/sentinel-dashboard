@@ -26,7 +26,7 @@ public class SystemRuleNacosProvider implements DynamicRuleProvider<List<SystemR
     private Converter<String, List<SystemRuleEntity>> converter;
     
     @Override
-    public List<SystemRuleEntity> getRules(String appName) throws Exception {
+    public List<SystemRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
 
         String rules = configService.getConfig(appName + NacosConfigUtil.SYSTEM_FLOW_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, 3000);

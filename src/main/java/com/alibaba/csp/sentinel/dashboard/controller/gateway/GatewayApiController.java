@@ -84,7 +84,7 @@ public class GatewayApiController {
         try {
             //List<ApiDefinitionEntity> apis = sentinelApiClient.fetchApis(app, ip, port).get();
             //使用Provider实现类获取规则配置
-            List<ApiDefinitionEntity> apis = apiProvider.getRules(app);
+            List<ApiDefinitionEntity> apis = apiProvider.getRules(app,ip,port);
             repository.saveAll(apis);
             if(!CollectionUtils.isEmpty(apis)) {
                 //获取最大值Id

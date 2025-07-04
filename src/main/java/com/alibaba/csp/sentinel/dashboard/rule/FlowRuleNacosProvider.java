@@ -38,7 +38,7 @@ public class FlowRuleNacosProvider implements DynamicRuleProvider<List<FlowRuleE
     private Converter<String, List<FlowRuleEntity>> converter;
 
     @Override
-    public List<FlowRuleEntity> getRules(String appName) throws Exception {
+    public List<FlowRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
         String rules = configService.getConfig(appName + NacosConfigUtil.FLOW_DATA_ID_POSTFIX,
             NacosConfigUtil.GROUP_ID, 3000);
         if (StringUtil.isEmpty(rules)) {

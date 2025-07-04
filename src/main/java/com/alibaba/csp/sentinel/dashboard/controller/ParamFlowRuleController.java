@@ -108,7 +108,7 @@ public class ParamFlowRuleController {
                 .thenApply(repository::saveAll)
                 .thenApply(Result::ofSuccess)
                 .get();*/
-            List<ParamFlowRuleEntity> rules = ruleProvider.getRules(app);
+            List<ParamFlowRuleEntity> rules = ruleProvider.getRules(app,ip,port);
             rules = repository.saveAll(rules);
             if(!CollectionUtils.isEmpty(rules)) {
                 //获取最大值Id

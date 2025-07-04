@@ -31,7 +31,7 @@ public class AuthorityRuleNacosProvider implements DynamicRuleProvider<List<Auth
     private Converter<String, List<AuthorityRuleCorrectEntity>> converter;
     
     @Override
-    public List<AuthorityRuleEntity> getRules(String appName) throws Exception {
+    public List<AuthorityRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
 
         String rules = configService.getConfig(appName + NacosConfigUtil.AUTHORITY_FLOW_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, 3000);

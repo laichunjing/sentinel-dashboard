@@ -1,5 +1,6 @@
 package com.alibaba.csp.sentinel.dashboard.rule.gateway;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.dashboard.rule.NacosConfigUtil;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component("gatewayFlowRuleNacosPublisher")
 public class GatewayFlowRuleNacosPublisher implements DynamicRulePublisher<List<GatewayFlowRuleEntity>> {
@@ -22,7 +24,7 @@ public class GatewayFlowRuleNacosPublisher implements DynamicRulePublisher<List<
      * 负责将实体对象转换为json格式的字符串
      */
     @Autowired
-    private Converter<List<GatewayFlowRuleEntity>, String> converter;
+    private Converter<List<GatewayFlowRule>, String> converter;
 
     @Override
     public void publish(String app, List<GatewayFlowRuleEntity> rules) throws Exception {
@@ -35,7 +37,8 @@ public class GatewayFlowRuleNacosPublisher implements DynamicRulePublisher<List<
          *  第二个参数是nacos分组id，这个用默认提供的sentinel预留项即可；最后一个参数是数据转换
          *  器，要将对象转换成统一的格式后，网络传输到nacos。
          */
+        List<GatewayFlowRule> ruleList = rules.stream().map(GatewayFlowRuleEntity::toGatewayFlowRule).collect(Collectors.toList());
         configService.publishConfig(app + NacosConfigUtil.GATEWAY_FLOW_DATA_ID_POSTFIX,
-                NacosConfigUtil.GROUP_ID, converter.convert(rules));
+                NacosConfigUtil.GROUP_ID, converter.convert(ruleList));
     }
 }

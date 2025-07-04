@@ -15,6 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.dashboard.config.NacosPropertiesConfiguration;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
@@ -115,13 +116,13 @@ public class NacosConfig {
 
     /**  需要初始化网关流控规则数据源  **/
     @Bean
-    public Converter<List<GatewayFlowRuleEntity>, String> gatewayFlowRuleEntityEncoder() {
+    public Converter<List<GatewayFlowRule>, String> gatewayFlowRuleEntityEncoder() {
         return JSON::toJSONString;
     }
 
     @Bean
-    public Converter<String, List<GatewayFlowRuleEntity>> gatewayFlowRuleEntityDecoder() {
-        return s -> JSON.parseArray(s, GatewayFlowRuleEntity.class);
+    public Converter<String, List<GatewayFlowRule>> gatewayFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, GatewayFlowRule.class);
     }
 
     @Bean

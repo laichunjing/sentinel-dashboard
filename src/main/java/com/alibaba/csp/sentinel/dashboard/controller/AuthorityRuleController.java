@@ -83,7 +83,7 @@ public class AuthorityRuleController {
         }
         try {
             //List<AuthorityRuleEntity> rules = sentinelApiClient.fetchAuthorityRulesOfMachine(app, ip, port);
-            List<AuthorityRuleEntity> rules = ruleProvider.getRules(app);
+            List<AuthorityRuleEntity> rules = ruleProvider.getRules(app,ip,port);
             rules = repository.saveAll(rules);
             if(!CollectionUtils.isEmpty(rules)) {
                 //获取最大值Id

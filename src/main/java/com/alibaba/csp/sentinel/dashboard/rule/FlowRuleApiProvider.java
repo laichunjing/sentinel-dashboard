@@ -41,7 +41,7 @@ public class FlowRuleApiProvider implements DynamicRuleProvider<List<FlowRuleEnt
     private AppManagement appManagement;
 
     @Override
-    public List<FlowRuleEntity> getRules(String appName) throws Exception {
+    public List<FlowRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
         if (StringUtil.isBlank(appName)) {
             return new ArrayList<>();
         }

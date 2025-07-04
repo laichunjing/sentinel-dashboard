@@ -88,7 +88,7 @@ public class GatewayFlowRuleController {
         try {
             //List<GatewayFlowRuleEntity> rules = sentinelApiClient.fetchGatewayFlowRules(app, ip, port).get();
             //使用Provider实现类获取规则配置
-            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app);
+            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app,ip,port);
             repository.saveAll(rules);
             if(!CollectionUtils.isEmpty(rules)) {
                 //获取最大值Id

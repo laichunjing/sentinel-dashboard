@@ -32,7 +32,7 @@ public class ParamRuleNacosProvider implements DynamicRuleProvider<List<ParamFlo
     private Converter<String, List<ParamFlowRuleCorrectEntity>> converter;
     
     @Override
-    public List<ParamFlowRuleEntity> getRules(String appName) throws Exception {
+    public List<ParamFlowRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
 
         String rules = configService.getConfig(appName + NacosConfigUtil.PARAM_FLOW_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, 3000);

@@ -92,7 +92,7 @@ public class SystemController {
         try {
       /*      List<SystemRuleEntity> rules = sentinelApiClient.fetchSystemRuleOfMachine(app, ip, port);
             rules = repository.saveAll(rules);*/
-            List<SystemRuleEntity> rules = ruleProvider.getRules(app);
+            List<SystemRuleEntity> rules = ruleProvider.getRules(app,ip,port);
             rules = repository.saveAll(rules);
             if(!CollectionUtils.isEmpty(rules)) {
                 //获取最大值Id

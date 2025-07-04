@@ -21,7 +21,7 @@ public class GatewayApiNacosProvider implements DynamicRuleProvider<List<ApiDefi
     private Converter<String, List<ApiDefinitionEntity>> converter;
 
     @Override
-    public List<ApiDefinitionEntity> getRules(String appName) throws Exception {
+    public List<ApiDefinitionEntity> getRules(String appName, String ip, Integer port) throws Exception {
         String rules = configService.getConfig(appName+ NacosConfigUtil.GATEWAY_API_DATA_ID_POSTFIX, NacosConfigUtil.GROUP_ID, 3000);
         if (StringUtil.isEmpty(rules)) {
             return new ArrayList<>();

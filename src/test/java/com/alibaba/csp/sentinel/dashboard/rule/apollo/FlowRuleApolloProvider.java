@@ -43,7 +43,7 @@ public class FlowRuleApolloProvider implements DynamicRuleProvider<List<FlowRule
     private Converter<String, List<FlowRuleEntity>> converter;
 
     @Override
-    public List<FlowRuleEntity> getRules(String appName) throws Exception {
+    public List<FlowRuleEntity> getRules(String appName, String ip, Integer port) throws Exception {
         String appId = "appId";
         String flowDataId = ApolloConfigUtil.getFlowDataId(appName);
         OpenNamespaceDTO openNamespaceDTO = apolloOpenApiClient.getNamespace(appId, "DEV", "default", "application");
