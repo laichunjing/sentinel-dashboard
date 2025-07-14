@@ -78,3 +78,9 @@ JAVA_OPTS="${JAVA_OPTS} -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:Sur
 sentinel控制台增加application.property配置（记得改nacos配置），jekins新增任务，打包启动后
 
 gateway使用分支sentinel_gateway部署
+
+gateway sentinel 配置流控是到单节点的，不支持集群（比如gateway有3个节点，流控阙值配置20，那请求流控到gateway集群的就是60，到单个节点的是20QPS）
+gateway sentinel 配置API分组：
+1.Sentinel只保证整个API分组的入口总QPS不超过100。
+2.它不控制、也无法保证流量在后端三个地址上的分配是否均匀或是否会导致某个地址过载。
+3.完美情况下会负载均衡到三个地址
